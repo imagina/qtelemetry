@@ -17,13 +17,29 @@ export default {
         },
         read: {
           columns: [
-            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},            
-            {name: 'lat', label: 'latitude', field: 'lat', align: 'rigth'},
-            {name: 'lng', label: 'longitude', field: 'lng', align: 'rigth'},            
-            {name: 'country', label: 'country', field: 'country', align: 'rigth', format: val => val && val?.name ? val.name : '-' },
-            {name: 'province', label: 'province', field: 'province', align: 'rigth', format: val => val && val?.name ? val.name : '-' },
-            {name: 'city', label: 'city', field: 'city', align: 'rigth', format: val => val && val?.name ? val.name : '-' },
+            {
+              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'
+            },
+            {
+              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
+            {
+              name: 'lat', label: 'latitude', field: 'lat', align: 'rigth'
+            },
+            {
+              name: 'lng', label: 'longitude', field: 'lng', align: 'rigth'
+            },
+            {
+              name: 'country', label: this.$tr('isite.cms.label.country'), field: 'country', align: 'rigth',
+              format: val => val && val?.name ? val.name : '-'
+            },
+            {
+             name: 'province', label: this.$tr('isite.cms.label.department'), field: 'province', align: 'rigth',
+             format: val => val && val?.name ? val.name : '-'
+            },
+            {
+              name: 'city', label: this.$tr('isite.cms.form.city'), field: 'city', align: 'rigth',
+              format: val => val && val?.name ? val.name : '-'
+            },
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
@@ -36,7 +52,9 @@ export default {
               name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
-            {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
+            {
+              name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'
+            },
           ],
           requestParams: {
             include: 'city,country,province',
@@ -47,8 +65,89 @@ export default {
           title: this.$tr('itask.cms.updatePriority'),
         },
         //delete: true,
-        formLeft: {},
-        formRight: {}
+        formLeft: {
+          title: {
+            value: '',
+            type: 'input',
+            isTranslatable: true,
+            props: {
+              label: `${this.$tr('isite.cms.form.title')}*`,
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+          },
+          map: {
+            value: {lat: this.crudInfo.lat,},
+            type: 'positionMarkerMap',
+            help: {description: this.$tr('icommerce.cms.form.mapHelp')},
+            required: true,
+            isFakeField: true,
+            props: {
+              label: `${this.$tr('isite.cms.label.search')}...`,
+              emitDefault: (this.crudInfo.typeForm === 'create'),
+            }
+          },
+        },
+        formRight: {
+          countryId: {
+            value: null,
+            type: 'select',
+            props: {
+              label: this.$tr('isite.cms.label.country') + '*',
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qlocations.countries',
+              select: {label: 'name', id: 'id'},
+            }
+          },
+          provinceId: {
+            value: null,
+            type: 'select',
+            props: {
+              label: this.$tr('isite.cms.label.department') + '*',
+              readonly: (this.crudInfo.countryId ? false : true),
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: this.crudInfo.countryId ? 'apiRoutes.qlocations.provinces' : false,
+              select: {label: 'name', id: 'id'},
+              requestParams: {filter: {country: this.crudInfo.countryId}}
+            }
+          },
+          cityId: {
+            value: null,
+            type: 'select',
+            props: {
+              label: this.$tr('isite.cms.form.city') + '*',
+              readonly: (this.crudInfo.provinceId ? false : true),
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: this.crudInfo.provinceId ? 'apiRoutes.qlocations.cities' : false,
+              select: {label: 'name', id: 'id'},
+              requestParams: {filter: {province_id: this.crudInfo.provinceId}}
+            }
+          },
+        },
+        getDataForm(data, type) {
+          return new Promise(resolve => {
+            //replace name value
+            if (data.options) {
+              data.lat = data.options.map?.lat
+              data.lng = data.options.map?.lng
+            }
+            //Response
+            resolve(data)
+          })
+        }
       }
     },
     //Crud info
