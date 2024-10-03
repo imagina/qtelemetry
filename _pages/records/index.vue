@@ -47,7 +47,8 @@ export default {
         return {
           name: `sensor_${sensor.id}`,
           field: 'logs', 
-          label: sensor.title,              
+          label: sensor.title,
+          align: 'center',
           format: (val) => {
             if(val){
               const log = val.find((x) => x.sensorId == sensor.id )
