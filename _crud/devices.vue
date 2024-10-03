@@ -133,9 +133,6 @@ export default {
             type: 'select',
             props: {
               label: this.$tr('isite.cms.label.country') + '*',
-              rules: [
-                val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
             },
             loadOptions: {
               apiRoute: 'apiRoutes.qlocations.countries',
@@ -148,9 +145,6 @@ export default {
             props: {
               label: this.$tr('isite.cms.label.department') + '*',
               readonly: (this.crudInfo.countryId ? false : true),
-              rules: [
-                val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
             },
             loadOptions: {
               apiRoute: this.crudInfo.countryId ? 'apiRoutes.qlocations.provinces' : false,
@@ -164,9 +158,6 @@ export default {
             props: {
               label: this.$tr('isite.cms.form.city') + '*',
               readonly: (this.crudInfo.provinceId ? false : true),
-              rules: [
-                val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
             },
             loadOptions: {
               apiRoute: this.crudInfo.provinceId ? 'apiRoutes.qlocations.cities' : false,

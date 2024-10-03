@@ -5,9 +5,13 @@ export default {
         "adminGroup": "Telemetria",
         "adminDevices": "Dispositivos",
         "adminSensors": "Sensores",
+        "adminRecords": "Registros"
       },
       "label": {},
-      "form": {},
+      "form": {
+        "devices": "Dispositivos",
+      },
+      "device": "Dispositivo",
       "newDevice": "Nuevo Dispositivo",
       "updateDevice": "Actualizar Dispositivo",
       "newSensor": "Neevo Sensor",
