@@ -14,7 +14,7 @@ export default {
         crudId: this.crudId,        
         apiRoute: 'apiRoutes.qtelemetry.devices',
         create: {
-          title: this.$tr('itask.cms.newPriority'),
+          title: this.$tr('itelemetry.cms.newDevice'),
         },
         read: {
           columns: [
@@ -63,7 +63,7 @@ export default {
           filters: {}
         },
         update: {
-          title: this.$tr('itask.cms.updatePriority'),
+          title: this.$tr('itelemetry.cms.updateDevice'),
         },
         delete: true,
         formLeft: {
