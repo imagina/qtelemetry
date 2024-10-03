@@ -8,7 +8,7 @@ export default [
       children: [
         pages.qtelemetry.devices,
         pages.qtelemetry.sensors,
-        //pages.itelemetry.records,
+        pages.qtelemetry.records
       ]
     },
   ]
