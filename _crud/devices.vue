@@ -1,4 +1,5 @@
-<template></template>
+<template>
+</template>
 <script>
 
 export default {
@@ -64,7 +65,7 @@ export default {
         update: {
           title: this.$tr('itask.cms.updatePriority'),
         },
-        //delete: true,
+        delete: true,
         formLeft: {
           title: {
             value: '',
@@ -78,7 +79,7 @@ export default {
             },
           },
           map: {
-            value: {lat: this.crudInfo.lat,},
+            value: {lat: this.crudInfo.lat, lng: this.crudInfo.lng},
             type: 'positionMarkerMap',
             help: {description: this.$tr('icommerce.cms.form.mapHelp')},
             required: true,
