@@ -3,10 +3,15 @@ export default {
     "cms": {
       "sidebar": {
         "adminGroup": "Telemetria",
-        "adminDevices": "Dispositivos",        
+        "adminDevices": "Dispositivos",
+        "adminSensors": "Sensores",
       },
       "label": {},
-      "form": {},      
+      "form": {},
+      "newDevice": "Nuevo Dispositivo",
+      "updateDevice": "Actualizar Dispositivo",
+      "newSensor": "Neevo Sensor",
+      "updateSensor": "Actualizar Sensor",
     }
   }
 }

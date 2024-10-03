@@ -1,4 +1,5 @@
-<template></template>
+<template>
+</template>
 <script>
 
 export default {
@@ -13,7 +14,7 @@ export default {
         crudId: this.crudId,        
         apiRoute: 'apiRoutes.qtelemetry.devices',
         create: {
-          title: this.$tr('itask.cms.newPriority'),
+          title: this.$tr('itelemetry.cms.newDevice'),
         },
         read: {
           columns: [
@@ -59,12 +60,49 @@ export default {
           requestParams: {
             include: 'city,country,province',
           },          
-          filters: {}
+          filters: {
+            countryId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('ilocations.cms.form.country'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.countries',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+            provinceId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('ilocations.cms.form.province'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.provinces',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+            cityId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.city'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.cities',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+          },
         },
         update: {
-          title: this.$tr('itask.cms.updatePriority'),
+          title: this.$tr('itelemetry.cms.updateDevice'),
         },
-        //delete: true,
+        delete: true,
         formLeft: {
           title: {
             value: '',
@@ -78,7 +116,7 @@ export default {
             },
           },
           map: {
-            value: {lat: this.crudInfo.lat,},
+            value: {lat: this.crudInfo.lat, lng: this.crudInfo.lng},
             type: 'positionMarkerMap',
             help: {description: this.$tr('icommerce.cms.form.mapHelp')},
             required: true,

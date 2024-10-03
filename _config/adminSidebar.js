@@ -7,7 +7,7 @@ export default [
       icon: 'fa-light fa-satellite-dish',
       children: [
         pages.qtelemetry.devices,
-        //pages.itelemetry.sensors,
+        pages.qtelemetry.sensors,
         //pages.itelemetry.records,
       ]
     },
