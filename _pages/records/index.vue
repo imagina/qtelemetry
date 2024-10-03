@@ -16,19 +16,18 @@ export default {
   data() {
     return {
       defaultCols: [
-          {
-            name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'
-          },            
-          {
-            name: 'device', label: this.$tr('itelemetry.cms.device'), field: 'device', align: 'rigth',
-            format: val => val && val?.title ? val.title : '-'
-          },
-          {
-            name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
-            format: val => val ? this.$trd(val) : '-',
-          }          
+        {
+          name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'
+        },
+        {
+          name: 'device', label: this.$tr('itelemetry.cms.device'), field: 'device', align: 'rigth',
+          format: val => val && val?.title ? val.title : '-'
+        },
+        {
+          name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
+          format: val => val ? this.$trd(val) : '-',
+        }
       ],
-      showCrud: false,
       columns: null, 
       sensors: null,
     }
