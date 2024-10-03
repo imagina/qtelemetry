@@ -60,7 +60,44 @@ export default {
           requestParams: {
             include: 'city,country,province',
           },          
-          filters: {}
+          filters: {
+            countryId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('ilocations.cms.form.country'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.countries',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+            provinceId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('ilocations.cms.form.province'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.provinces',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+            cityId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.city'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qlocations.cities',
+                select: {label: 'name', id: 'id'},
+              }
+            },
+          },
         },
         update: {
           title: this.$tr('itelemetry.cms.updateDevice'),
