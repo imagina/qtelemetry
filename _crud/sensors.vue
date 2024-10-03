@@ -25,7 +25,6 @@ export default {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},                          
             {
               name: 'systemName', label: this.$tr('isite.cms.form.systemName'), field: 'systemName', align: 'rigth',
-              format: val => val && val?.name ? val.name : '-'
             },
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',

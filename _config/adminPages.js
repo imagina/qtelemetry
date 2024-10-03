@@ -31,5 +31,21 @@ export default {
         refresh: true,
     }
   },
+
+  records: {
+    //permission: '',
+    activated: true,
+    authenticated: true,
+    path: '/telemetry/records/index',
+    name: 'qtelemetry.admin.records',
+    //crud : import('modules/qtelemetry/_crud/records'),
+    page: () => import('modules/qtelemetry/_pages/records'),
+    layout: () => import('layouts/master.vue'),
+    title: 'itelemetry.cms.sidebar.adminRecords',
+    icon: 'fa-light fa-signal-stream',
+    subHeader: {
+        refresh: true,
+    }
+  },
   
 }

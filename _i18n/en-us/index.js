@@ -5,9 +5,13 @@ export default {
         "adminGroup": "Telemetry",
         "adminDevices": "Devices",
         "adminSensors": "Sensors",
+        "adminRecords": "Records"
       },
       "label": {},
-      "form": {},
+      "form": {
+        "devices": "Devices",
+      },
+      "device": "Device",
       "newDevice": "New Device",
       "updateDevice": "Update Device",
       "newSensor": "New Sensor",
