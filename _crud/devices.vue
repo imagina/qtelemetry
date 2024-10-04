@@ -51,10 +51,6 @@ export default {
               format: val => val ? this.$trd(val) : '-'
             },
             {
-              name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-'
-            },
-            {
               name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'
             }
           ],
