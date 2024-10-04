@@ -12,11 +12,9 @@ export default {
     crudData() {
       return {
         crudId: this.crudId,        
-        apiRoute: 'apiRoutes.qtelemetry.records',
-        create: {
-          title: this.$tr('itelemetry.cms.newDevice'),
-        },
+        apiRoute: 'apiRoutes.qtelemetry.records',        
         read: {
+          title: this.$tr('itelemetry.cms.sidebar.adminRecords'),
           columns: [],
           requestParams: {
             include: 'device,logs',

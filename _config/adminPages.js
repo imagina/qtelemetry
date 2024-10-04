@@ -47,5 +47,21 @@ export default {
         refresh: true,
     }
   },
+
+  graphs: {
+    //permission: '',
+    activated: true,
+    authenticated: true,
+    path: '/telemetry/graphs/index',
+    name: 'qtelemetry.admin.graphs',
+    //crud : import('modules/qtelemetry/_crud/records'),
+    page: () => import('modules/qtelemetry/_pages/graphs'),
+    layout: () => import('layouts/master.vue'),
+    title: 'itelemetry.cms.sidebar.adminGraphs',
+    icon: 'fa-light fa-chart-area',
+    subHeader: {
+        refresh: true,
+    }
+  },
   
 }
