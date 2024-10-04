@@ -6,15 +6,15 @@ export default {
   data() {
     return {
       crudId: this.$uid()
-    }
+    };
   },
   computed: {
     crudData() {
       return {
-        crudId: this.crudId,        
+        crudId: this.crudId,
         apiRoute: 'apiRoutes.qtelemetry.devices',
         create: {
-          title: this.$tr('itelemetry.cms.newDevice'),
+          title: this.$tr('itelemetry.cms.newDevice')
         },
         read: {
           columns: [
@@ -22,7 +22,8 @@ export default {
               name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'
             },
             {
-              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
+              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'
+            },
             {
               name: 'lat', label: 'latitude', field: 'lat', align: 'rigth'
             },
@@ -34,8 +35,8 @@ export default {
               format: val => val && val?.name ? val.name : '-'
             },
             {
-             name: 'province', label: this.$tr('isite.cms.label.department'), field: 'province', align: 'rigth',
-             format: val => val && val?.name ? val.name : '-'
+              name: 'province', label: this.$tr('isite.cms.label.department'), field: 'province', align: 'rigth',
+              format: val => val && val?.name ? val.name : '-'
             },
             {
               name: 'city', label: this.$tr('isite.cms.form.city'), field: 'city', align: 'rigth',
@@ -43,23 +44,23 @@ export default {
             },
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
+              format: val => val ? this.$trd(val) : '-'
             },
             {
               name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
+              format: val => val ? this.$trd(val) : '-'
             },
             {
               name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
+              format: val => val ? this.$trd(val) : '-'
             },
             {
               name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'
-            },
+            }
           ],
           requestParams: {
-            include: 'city,country,province',
-          },          
+            include: 'city,country,province'
+          },
           filters: {
             countryId: {
               value: null,
@@ -70,7 +71,7 @@ export default {
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qlocations.countries',
-                select: {label: 'name', id: 'id'},
+                select: { label: 'name', id: 'id' }
               }
             },
             provinceId: {
@@ -82,7 +83,7 @@ export default {
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qlocations.provinces',
-                select: {label: 'name', id: 'id'},
+                select: { label: 'name', id: 'id' }
               }
             },
             cityId: {
@@ -94,13 +95,13 @@ export default {
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qlocations.cities',
-                select: {label: 'name', id: 'id'},
+                select: { label: 'name', id: 'id' }
               }
-            },
-          },
+            }
+          }
         },
         update: {
-          title: this.$tr('itelemetry.cms.updateDevice'),
+          title: this.$tr('itelemetry.cms.updateDevice')
         },
         delete: true,
         formLeft: {
@@ -112,77 +113,77 @@ export default {
               label: `${this.$tr('isite.cms.form.title')}*`,
               rules: [
                 val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
+              ]
+            }
           },
           map: {
-            value: {lat: this.crudInfo.lat, lng: this.crudInfo.lng},
+            value: null,
             type: 'positionMarkerMap',
-            help: {description: this.$tr('icommerce.cms.form.mapHelp')},
+            help: { description: this.$tr('icommerce.cms.form.mapHelp') },
             required: true,
             isFakeField: true,
             props: {
               label: `${this.$tr('isite.cms.label.search')}...`,
-              emitDefault: (this.crudInfo.typeForm === 'create'),
+              emitDefault: (this.crudInfo.typeForm === 'create')
             }
-          },
+          }
         },
         formRight: {
           countryId: {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('isite.cms.label.country') + '*',
+              label: this.$tr('isite.cms.label.country')
             },
             loadOptions: {
               apiRoute: 'apiRoutes.qlocations.countries',
-              select: {label: 'name', id: 'id'},
+              select: { label: 'name', id: 'id' }
             }
           },
           provinceId: {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('isite.cms.label.department') + '*',
-              readonly: (this.crudInfo.countryId ? false : true),
+              label: this.$tr('isite.cms.label.department'),
+              readonly: (this.crudInfo.countryId ? false : true)
             },
             loadOptions: {
               apiRoute: this.crudInfo.countryId ? 'apiRoutes.qlocations.provinces' : false,
-              select: {label: 'name', id: 'id'},
-              requestParams: {filter: {country: this.crudInfo.countryId}}
+              select: { label: 'name', id: 'id' },
+              requestParams: { filter: { country: this.crudInfo.countryId } }
             }
           },
           cityId: {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('isite.cms.form.city') + '*',
-              readonly: (this.crudInfo.provinceId ? false : true),
+              label: this.$tr('isite.cms.form.city'),
+              readonly: (this.crudInfo.provinceId ? false : true)
             },
             loadOptions: {
               apiRoute: this.crudInfo.provinceId ? 'apiRoutes.qlocations.cities' : false,
-              select: {label: 'name', id: 'id'},
-              requestParams: {filter: {province_id: this.crudInfo.provinceId}}
+              select: { label: 'name', id: 'id' },
+              requestParams: { filter: { province_id: this.crudInfo.provinceId } }
             }
-          },
+          }
         },
         getDataForm(data, type) {
           return new Promise(resolve => {
             //replace name value
             if (data.options) {
-              data.lat = data.options.map?.lat
-              data.lng = data.options.map?.lng
+              data.lat = data.options.map?.lat;
+              data.lng = data.options.map?.lng;
             }
             //Response
-            resolve(data)
-          })
+            resolve(data);
+          });
         }
-      }
+      };
     },
     //Crud info
     crudInfo() {
-      return this.$store.state.qcrudComponent.component[this.crudId] || {}
+      return this.$store.state.qcrudComponent.component[this.crudId] || {};
     }
-  },
-}
+  }
+};
 </script>
