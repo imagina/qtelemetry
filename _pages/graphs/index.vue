@@ -11,15 +11,12 @@
       <div>
         <PlotFigure
             :options="{
-              grid: true, 
               nice: true,
               marks: marks
             }"
         />
       </div>
-      <pre>{{ marks }}</pre>
-      
-      
+      <inner-loading :visible="loading" />
     </div>
 </template>
 <script lang="ts">
