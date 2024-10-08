@@ -1,7 +1,6 @@
 import {computed, reactive, ref, onMounted, toRefs, watch, getCurrentInstance} from "vue";
 import services from 'modules/qtelemetry/_pages/graphs/services'
 import { store, i18n, clone, alert } from 'src/plugins/utils';
-import * as Plot from "@observablehq/plot";
 import moment from "moment";
 
 export default function controller(props: any, emit: any) {
@@ -54,14 +53,7 @@ export default function controller(props: any, emit: any) {
         }
       },      
     },
-    averages: {
-      style: "overflow: visible;",
-      y: {
-        grid: true,
-        label: "Average",
-      },
-      marks: []
-    },     
+    averages: null,
     history: {      
       maxWidth: '900',
       height: '600',
@@ -164,7 +156,7 @@ export default function controller(props: any, emit: any) {
       return logs
     },
     updateMakrs(){
-      state.averages.marks = methods.plotAverages()
+      methods.drawAverages()
       state.history.marks = methods.plotHistory()
     },
 
@@ -179,7 +171,7 @@ export default function controller(props: any, emit: any) {
           const sum = data.reduce((accumulator, obj) => accumulator + obj.value, 0);
           const average = sum / data.length;
           averages.push({
-            name: sensor.title || sensor.id, 
+            label: sensor.title || sensor.id,
             average: average, 
             length: data.length,
             sum, 
@@ -188,23 +180,49 @@ export default function controller(props: any, emit: any) {
       })
       return averages
     },
-    plotAverages(){
+    drawAverages(){
       const averages = methods.getAverages()
-      return [
-        Plot.barY(averages, {x: 'name', y: "average", fill: 'steelblue', tip: 'x'}),
-        Plot.text(averages, {x: 'name', y:  "average", text: (d) => d.average, dy: -6, lineAnchor: "bottom"}),
-        Plot.ruleY([0])
-      ]
+      console.log(averages)
+      state.averages = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: {
+            alignWithLabel: true
+          },
+          data: averages.map(a => a.label)
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: averages.map(a => a.average.toFixed(2)),
+            type: 'bar'
+          }
+        ]
+      }
     }, 
 
     /* history */    
     plotHistory(){
       if(!state.logs) return []
       return [
-        Plot.ruleY([0]),
-        Plot.lineY(state.logs, {x: "date", y: "value", stroke: "name", tip: "y", marker: 'circle'}),
+        //Plot.ruleY([0]),
+        //Plot.lineY(state.logs, {x: "date", y: "value", stroke: "name", tip: "y", marker: 'circle'}),
         ///Plot.crosshair(state.logs, {x: "date", y: "value"})
-        Plot.ruleX(state.logs, Plot.pointerX({x: "date", py: "value", stroke: "red"})),
+        //Plot.ruleX(state.logs, Plot.pointerX({x: "date", py: "value", stroke: "red"})),
       ]    
     }
   }
