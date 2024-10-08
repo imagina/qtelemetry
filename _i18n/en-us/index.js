@@ -11,7 +11,7 @@ export default {
       "label": {},
       "form": {
         "devices": "Devices",
-        "selectDevice": "Please seletc a device", 
+        "selectDevice": "Please select a device",
         "saveImage": "Save Image"
       },
       "device": "Device",
