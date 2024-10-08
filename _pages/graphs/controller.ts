@@ -1,13 +1,11 @@
 import {computed, reactive, ref, onMounted, toRefs, watch, getCurrentInstance} from "vue";
 import services from 'modules/qtelemetry/_pages/graphs/services'
-import { store, i18n, clone, alert } from 'src/plugins/utils';
-import * as Plot from "@observablehq/plot";
+import { i18n } from 'src/plugins/utils';
 import moment from "moment";
 
-export default function controller(props: any, emit: any) {
-  const proxy = getCurrentInstance()!.appContext.config.globalProperties
+export default function controller(props: any, emit: any) {  
 
-  const dateFormat = 'YYYY/MM/DD'
+  const dateFormat = 'YYYY-MM-DD'
 
   // Refs
   const refs = {
@@ -16,26 +14,28 @@ export default function controller(props: any, emit: any) {
 
   // States
   const state = reactive({
-    // Key: Default Value
+    // Key: Default Value    
     loading: false,
     columns: null, 
     sensors: null,
-    records: null,
+    records: [],
+    logs: null,
     dynamicFilterValues: {},
     dynamicFilters: {
       deviceId: {
         value: null,
         type: 'select',
         quickFilter: true,
+        
         loadOptions: {
           apiRoute: 'apiRoutes.qtelemetry.devices',
           select: {label: 'title', id: 'id'},
         },
         props: {          
-          label: `${i18n.tr('itelemetry.cms.form.devices')}`,
+          label: `${i18n.tr('itelemetry.cms.form.devices')}*`,
+          clearable: true,
         }
       },
-      /*
       date: {
         value: {
           type: 'customRange',
@@ -45,21 +45,25 @@ export default function controller(props: any, emit: any) {
         type: 'dateRange',
         quickFilter: true,
         props: {
-          label: 'Date',
-          clearable: false,
+          label: `${i18n.tr('isite.cms.form.date')}*`,
+          clearable: true,
           removeTime: true,
           autoClose: true
         }
-      },
-      */
+      },      
     },
-    marks: [] 
-    
+    averages: null,
+    history: null
   })
 
   // Computed
   const computeds = {
     // key: computed(() => {})
+    isDeviceSelected: computed(() => state.dynamicFilterValues.deviceId),
+    notResult: computed(() => !state.records.length && computeds.isDeviceSelected.value && !state.loading),
+    showAverages: computed(() => !state.loading && state.averages && state.records.length),
+    showHistory: computed(() => !state.loading && state.history && state.records.length), 
+    averagesTitleByRange: computed(() => i18n.tr('itelemetry.cms.averagesByRange', {from: state.dynamicFilterValues.date.from, to: state.dynamicFilterValues.date.to}) )
   }
 
   // Methods
@@ -68,23 +72,25 @@ export default function controller(props: any, emit: any) {
     init(){},
     updateDynamicFilterValues(filters){
       state.dynamicFilterValues = filters
-      methods.getData()      
+      if(computeds.isDeviceSelected.value){
+        methods.getData()
+      }
     },
     getData(){
-      if(state.dynamicFilterValues?.deviceId) {
+      if(state.dynamicFilterValues?.deviceId && state.dynamicFilterValues?.date) {
         state.loading = true
         methods.getSensors().then(response => {
           state.columns = methods.getColumns()        
           methods.getRecords().then(response => {
-            state.marks = methods.setMarks(response)
+            state.logs = methods.mapLogs(response)            
+            methods.updateGraphs()
             state.loading = false
           })
         })
-
       }
     },
     getColumns() {
-      const dynamicCols =   state.sensors.map((sensor) => {
+      const dynamicCols = state.sensors.map((sensor) => {
         return {
           name: `sensor_${sensor.id}`,
           field: 'logs', 
@@ -126,24 +132,177 @@ export default function controller(props: any, emit: any) {
         })
       })
     }, 
-    setMarks(records){
-      const marks = []
-      
+    mapLogs(records){
       const logs = []
-      state.records.forEach((record) => {
+      records.forEach((record) => {
         record.logs.forEach((log) => {
           const sensor = state.sensors.find(x => x.id == log.sensorId)
           logs.push({
-            createdAt: record.createdAt,
+            date:  record.createdAt,
             value: log.value,
             sensorId: log.sensorId,
             name: sensor.title || sensor.id
           })
         })
       })
-      return [
-        Plot.barY(logs, {x: 'name', y:  "value", tip: true, stroke: "green", fill: "green"})
-      ]
+      return logs
+    },
+    updateGraphs(){
+      methods.drawAverages()
+      methods.drawHistory()
+    },
+
+    /* averages */
+    getAverages(){
+      if(!state.logs) return []
+      const logs = state.logs
+      const averages = []
+      state.sensors.forEach((sensor) => {
+        const data = logs.filter(log => log.sensorId == sensor.id) || null        
+        if(data && data.length){
+          const sum = data.reduce((accumulator, obj) => accumulator + obj.value, 0);
+          const average = sum / data.length;
+          averages.push({
+            label: sensor.title || sensor.id,
+            average: average, 
+            length: data.length,
+            sum, 
+          })
+        }
+      })
+      return averages
+    },
+    drawAverages(){
+      const averages = methods.getAverages()
+      state.averages = {
+        title: {
+          text: i18n.tr('itelemetry.cms.averagesGraph'),
+          left: 'center',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {
+              show: true,
+              title: i18n.tr('itelemetry.cms.form.saveImage'),
+              pixelRatio: 3
+            }
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+         left: '4%',
+         right: '4%',
+         bottom: '4%',
+         containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: {
+            alignWithLabel: true
+          },
+          data: averages.map(a => a.label)
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'inside'
+            },
+            data: averages.map(a => a.average.toFixed(2))
+          }
+        ]
+      }
+    }, 
+
+    /* history */    
+    drawHistory(){
+      if(!state.logs) return [];    
+
+      let date = state.records.map(r => r.createdAt)      
+      date = Array.from(new Set(date)) //remove duplicates
+      let series = [];
+      //adds a serie for each sensor
+      state.sensors.forEach(s => {        
+        series.push({
+          name: s.title, 
+          type: 'line',
+          stack: 'Total',
+          emphasis: {
+            focus: 'series'
+          },
+          label: {
+            show: true,
+            position: 'top'
+          },
+          data: state.logs.filter(l => l.sensorId == s.id) //filters logs by sensor
+        })
+      })
+      
+      state.history = {
+        tooltip: {
+          trigger: 'axis',
+          position: function (pt) {
+            return [pt[0], '10%'];
+          }
+        },        
+        title: {
+          text: i18n.tr('itelemetry.cms.historicalGraph'),
+          left: 'center',
+        },
+        
+        legend: {
+          type: 'scroll',
+          top: '10%',
+          data: state.sensors.map(s => s.title)
+        },
+        grid: {
+          top: '30%',
+          left: '4%',
+          right: '4%',
+          bottom: '4%',
+          containLabel: true
+         },
+        toolbox: {
+          feature: {
+            restore: {},
+            saveAsImage: {
+              show: true,
+              title: i18n.tr('itelemetry.cms.form.saveImage'),
+              pixelRatio: 3
+            }
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: date
+        },
+        yAxis: {
+          type: 'value',
+          boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+          {
+            type: 'inside',
+            //start: 0,
+            //end: 10
+          },
+          {
+            //start: 0,
+            //end: 10
+          }
+        ],
+        series: series
+      };      
     }
   }
 

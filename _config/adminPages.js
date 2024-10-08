@@ -2,7 +2,7 @@
 export default {
 
  devices: {
-    //permission: '',
+    permission: 'itelemetry.devices.manage',
     activated: true,
     authenticated: true,
     path: '/telemetry/devices/index',
@@ -17,7 +17,7 @@ export default {
     }
   },
   sensors: {
-    //permission: '',
+    permission: 'itelemetry.sensors.manage',
     activated: true,
     authenticated: true,
     path: '/telemetry/sensors/index',
@@ -33,7 +33,7 @@ export default {
   },
 
   records: {
-    //permission: '',
+    permission: 'itelemetry.records.manage',
     activated: true,
     authenticated: true,
     path: '/telemetry/records/index',
@@ -49,7 +49,7 @@ export default {
   },
 
   graphs: {
-    //permission: '',
+    permission: 'itelemetry.records.manage',
     activated: true,
     authenticated: true,
     path: '/telemetry/graphs/index',
@@ -63,5 +63,5 @@ export default {
         refresh: true,
     }
   },
-  
+
 }
