@@ -1,56 +1,53 @@
 <template>
-    <div> 
+    <div>
       <!--filters -->
-      <div class="row">
+      <div class="row q-pa-md">
         <div class="col-12">
           <dynamicFilter 
-          systemName="telemetry.graphs"
-          :filters="dynamicFilters"
-          @update:modelValue="filters => updateDynamicFilterValues(filters)"
-        />        
+            systemName="telemetry.graphs"
+            :filters="dynamicFilters"
+            @update:modelValue="filters => updateDynamicFilterValues(filters)"
+          />        
+        </div>        
+      </div>      
+      <not-result
+        class="row q-pa-md q-my-md justify-center"  
+        label="Please seletc a device"
+        v-if="!isDeviceSelected"        
+      />
+      <not-result class="row q-pa-md q-my-md justify-center" v-if="notResult" />
+      
+      <div v-if="isDeviceSelected">      
+        <!--history-->      
+        <div class="row q-pa-md q-my-md justify-center" v-if="showHistory">
+          <v-chart
+            class="chistoric-chart" 
+            :option="history" 
+            autoresize 
+          />
         </div>
-        
-      </div>
-      <!--history-->      
-      <div class="row q-pa-md q-my-xs justify-center">
-        <div class="text-h6">
-          Historical Graph
-        </div>
-      </div>
-      <div class="row q-pa-md q-my-md justify-center">
-        <!--<PlotRender
-          :options="history"
-        />-->
-      </div>
-      <!--averages-->      
-      <div class="row q-pa-md q-my-sm justify-center">
-        <div class="text-h6">
-          Averages Graph
-        </div>
-      </div>
-      <div class="row q-pa-md q-my-md justify-center">        
-          <!--<PlotRender
-            :options="averages"
-          />-->
-          <v-chart 
-            v-if="!loading"
+        <!--averages-->      
+        <div class="row q-pa-md q-my-md justify-center" v-if="showAverages">
+          <v-chart
             class="average-chart" 
             :option="averages" 
             autoresize 
           />
-
-      </div>      
-      <div class="row q-col-gutter-md">
-        <div class="col-12 col-md-3" v-for="(item, index) in getAverages()">          
-          <div class="average-card q-pa-md">
-            <div class="text-h6">{{ item.label }}</div>
-            <span class="text-h6 text-weight-bolder">
-              {{ item.average.toFixed(2) }}
-            </span>                          
+        </div>      
+        <div class="row q-col-gutter-md q-pa-xl q-my-md" v-if="showAverages">
+          <div class="col-12 col-md-3" v-for="(item, index) in getAverages()">          
+            <div class="average-card q-pa-md">
+              <div class="tw-text-gray-400 tw-text-xs tw-font-semibold">{{ item.label }}</div>
+              <span class="tw-text-2xl tw-font-bold">
+                {{ item.average.toFixed(4) }}
+              </span>                          
+            </div>
           </div>
-        </div>
-      </div>      
-      <inner-loading :visible="loading" />
+        </div>      
+      </div>
+      <div class="row">
+        <inner-loading :visible="loading" />
+      </div>
     </div>
 </template>
 <script lang="ts">
@@ -61,14 +58,16 @@ import dynamicFilter from 'modules/qsite/_components/master/dynamicFilter';
 /* vue echart imports */
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { PieChart, GraphChart, MapChart, BarChart, LineChart } from 'echarts/charts'
+import { PieChart, GraphChart, MapChart, BarChart, LineChart   } from 'echarts/charts'
 import VChart, { THEME_KEY } from 'vue-echarts'
 
 import {
   TitleComponent,
   TooltipComponent,
   LegendComponent,
-  GridComponent 
+  GridComponent,
+  ToolboxComponent,
+  DataZoomComponent
 } from 'echarts/components'
 
 
@@ -83,7 +82,9 @@ use([
   TitleComponent,
   TooltipComponent,
   LegendComponent,
-  GridComponent 
+  GridComponent,
+  ToolboxComponent ,
+  DataZoomComponent
 ])
 /* vue echart imports */
 
@@ -100,9 +101,14 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .average-card {
-  background-color: #f1f1f1;
+  background-color: #EBF1FA;
   border: solid 1px #dbd7d7;
   border-radius: 0.75rem;
+}
+
+.chistoric-chart {
+  width:  100%;
+  height: 520px;
 }
 
 .average-chart {

@@ -2,6 +2,9 @@ import {computed, reactive, ref, onMounted, toRefs, watch, getCurrentInstance} f
 import services from 'modules/qtelemetry/_pages/graphs/services'
 import { store, i18n, clone, alert } from 'src/plugins/utils';
 import moment from "moment";
+import * as echarts from 'echarts';
+import { title } from "process";
+
 
 export default function controller(props: any, emit: any) {
   const proxy = getCurrentInstance()!.appContext.config.globalProperties
@@ -19,7 +22,7 @@ export default function controller(props: any, emit: any) {
     loading: false,
     columns: null, 
     sensors: null,
-    records: null,
+    records: [],
     logs: null,
 
 
@@ -29,12 +32,14 @@ export default function controller(props: any, emit: any) {
         value: null,
         type: 'select',
         quickFilter: true,
+        
         loadOptions: {
           apiRoute: 'apiRoutes.qtelemetry.devices',
           select: {label: 'title', id: 'id'},
         },
         props: {          
           label: `${i18n.tr('itelemetry.cms.form.devices')}`,
+          clearable: true,
         }
       },
       date: {
@@ -47,33 +52,23 @@ export default function controller(props: any, emit: any) {
         quickFilter: true,
         props: {
           label: 'Date',
-          clearable: false,
+          clearable: true,
           removeTime: true,
           autoClose: true
         }
       },      
     },
     averages: null,
-    history: {      
-      maxWidth: '900',
-      height: '600',
-      style: "overflow: visible;",
-      x: {
-        //grid: true,
-        label: 'Date',
-      },
-      y: {
-        grid: true,
-        label: "Valor"
-      },
-      color: { legend: true },
-      marks: []
-    }
+    history: null
   })
 
   // Computed
   const computeds = {
     // key: computed(() => {})
+    isDeviceSelected: computed(() => state.dynamicFilterValues.deviceId),
+    notResult: computed(() => !state.records.length && computeds.isDeviceSelected.value && !state.loading),
+    showAverages: computed(() => !state.loading && state.averages && state.records.length),
+    showHistory: computed(() => !state.loading && state.history && state.records.length)
   }
 
   // Methods
@@ -82,7 +77,10 @@ export default function controller(props: any, emit: any) {
     init(){},
     updateDynamicFilterValues(filters){
       state.dynamicFilterValues = filters
-      methods.getData()      
+      if(computeds.isDeviceSelected.value){
+        methods.getData()
+      }
+      
     },
     getData(){
       if(state.dynamicFilterValues?.deviceId) {
@@ -91,7 +89,7 @@ export default function controller(props: any, emit: any) {
           state.columns = methods.getColumns()        
           methods.getRecords().then(response => {
             state.logs = methods.mapLogs(response)            
-            methods.updateMakrs()
+            methods.updateGraphs()
             state.loading = false
           })
         })
@@ -146,7 +144,7 @@ export default function controller(props: any, emit: any) {
         record.logs.forEach((log) => {
           const sensor = state.sensors.find(x => x.id == log.sensorId)
           logs.push({
-            date:  new Date(record.createdAt),
+            date:  record.createdAt,
             value: log.value,
             sensorId: log.sensorId,
             name: sensor.title || sensor.id
@@ -155,9 +153,9 @@ export default function controller(props: any, emit: any) {
       })
       return logs
     },
-    updateMakrs(){
+    updateGraphs(){
       methods.drawAverages()
-      state.history.marks = methods.plotHistory()
+      methods.drawHistory()
     },
 
     /* averages */
@@ -182,8 +180,20 @@ export default function controller(props: any, emit: any) {
     },
     drawAverages(){
       const averages = methods.getAverages()
-      console.log(averages)
       state.averages = {
+        title: {
+          text: 'Averages Graph', 
+          left: 'center',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {
+              show: true,
+              title: 'Save Image',
+              pixelRatio: 3
+            }
+          }
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -191,10 +201,10 @@ export default function controller(props: any, emit: any) {
           }
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
+         left: '4%',
+         right: '4%',
+         bottom: '4%',
+         containLabel: true
         },
         xAxis: {
           type: 'category',
@@ -216,14 +226,89 @@ export default function controller(props: any, emit: any) {
     }, 
 
     /* history */    
-    plotHistory(){
-      if(!state.logs) return []
-      return [
-        //Plot.ruleY([0]),
-        //Plot.lineY(state.logs, {x: "date", y: "value", stroke: "name", tip: "y", marker: 'circle'}),
-        ///Plot.crosshair(state.logs, {x: "date", y: "value"})
-        //Plot.ruleX(state.logs, Plot.pointerX({x: "date", py: "value", stroke: "red"})),
-      ]    
+    drawHistory(){
+      if(!state.logs) return []      
+
+      let date = state.records.map(r => r.createdAt)      
+      date = Array.from(new Set(date)) //remove duplicates
+
+      let series = [];
+
+      //adds a serie for each sensor
+      state.sensors.forEach(s => {        
+        series.push({
+          name: s.title, 
+          type: 'line',
+          stack: 'Total',
+          emphasis: {
+            focus: 'series'
+          },
+          label: {
+            show: true,
+            position: 'top'
+          },
+          data: state.logs.filter(l => l.sensorId == s.id) //filters logs by sensor
+        })
+      })
+      
+      
+      
+      state.history = {
+        tooltip: {
+          trigger: 'axis',
+          position: function (pt) {
+            return [pt[0], '10%'];
+          }
+        },        
+        title: {
+          text: 'Historical Graph',
+          left: 'center',
+        },
+        
+        legend: {
+          type: 'scroll',
+          top: '10%',
+          data: state.sensors.map(s => s.title)
+        },
+        grid: {
+          top: '30%',
+          left: '4%',
+          right: '4%',
+          bottom: '4%',
+          containLabel: true
+         },
+        toolbox: {
+          feature: {
+            restore: {},
+            saveAsImage: {
+              show: true,
+              title: 'Save Image',
+              pixelRatio: 3
+            }
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: date
+        },
+        yAxis: {
+          type: 'value',
+          boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+          {
+            type: 'inside',
+            //start: 0,
+            //end: 10
+          },
+          {
+            //start: 0,
+            //end: 10
+          }
+        ],
+        series: series
+      };      
     }
   }
 
