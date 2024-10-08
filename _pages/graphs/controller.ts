@@ -7,7 +7,7 @@ import moment from "moment";
 export default function controller(props: any, emit: any) {
   const proxy = getCurrentInstance()!.appContext.config.globalProperties
 
-  const dateFormat = 'YYYY/MM/DD'
+  const dateFormat = 'YYYY-MM-DD'
 
   // Refs
   const refs = {
@@ -16,11 +16,14 @@ export default function controller(props: any, emit: any) {
 
   // States
   const state = reactive({
-    // Key: Default Value
+    // Key: Default Value    
     loading: false,
     columns: null, 
     sensors: null,
     records: null,
+    logs: null,
+
+
     dynamicFilterValues: {},
     dynamicFilters: {
       deviceId: {
@@ -35,7 +38,6 @@ export default function controller(props: any, emit: any) {
           label: `${i18n.tr('itelemetry.cms.form.devices')}`,
         }
       },
-      /*
       date: {
         value: {
           type: 'customRange',
@@ -50,11 +52,31 @@ export default function controller(props: any, emit: any) {
           removeTime: true,
           autoClose: true
         }
-      },
-      */
+      },      
     },
-    marks: [] 
-    
+    averages: {
+      style: "overflow: visible;",
+      y: {
+        grid: true,
+        label: "Average",
+      },
+      marks: []
+    },     
+    history: {      
+      maxWidth: '900',
+      height: '600',
+      style: "overflow: visible;",
+      x: {
+        //grid: true,
+        label: 'Date',
+      },
+      y: {
+        grid: true,
+        label: "Valor"
+      },
+      color: { legend: true },
+      marks: []
+    }
   })
 
   // Computed
@@ -76,15 +98,15 @@ export default function controller(props: any, emit: any) {
         methods.getSensors().then(response => {
           state.columns = methods.getColumns()        
           methods.getRecords().then(response => {
-            state.marks = methods.setMarks(response)
+            state.logs = methods.mapLogs(response)            
+            methods.updateMakrs()
             state.loading = false
           })
         })
-
       }
     },
     getColumns() {
-      const dynamicCols =   state.sensors.map((sensor) => {
+      const dynamicCols = state.sensors.map((sensor) => {
         return {
           name: `sensor_${sensor.id}`,
           field: 'logs', 
@@ -126,24 +148,64 @@ export default function controller(props: any, emit: any) {
         })
       })
     }, 
-    setMarks(records){
-      const marks = []
-      
+    mapLogs(records){
       const logs = []
-      state.records.forEach((record) => {
+      records.forEach((record) => {
         record.logs.forEach((log) => {
           const sensor = state.sensors.find(x => x.id == log.sensorId)
           logs.push({
-            createdAt: record.createdAt,
+            date:  new Date(record.createdAt),
             value: log.value,
             sensorId: log.sensorId,
             name: sensor.title || sensor.id
           })
         })
       })
+      return logs
+    },
+    updateMakrs(){
+      state.averages.marks = methods.plotAverages()
+      state.history.marks = methods.plotHistory()
+    },
+
+    /* averages */
+    getAverages(){
+      if(!state.logs) return []
+      const logs = state.logs
+      const averages = []
+      state.sensors.forEach((sensor) => {
+        const data = logs.filter(log => log.sensorId == sensor.id) || null        
+        if(data && data.length){
+          const sum = data.reduce((accumulator, obj) => accumulator + obj.value, 0);
+          const average = sum / data.length;
+          averages.push({
+            name: sensor.title || sensor.id, 
+            average: average, 
+            length: data.length,
+            sum, 
+          })
+        }
+      })
+      return averages
+    },
+    plotAverages(){
+      const averages = methods.getAverages()
       return [
-        Plot.barY(logs, {x: 'name', y:  "value", tip: true, stroke: "green", fill: "green"})
+        Plot.barY(averages, {x: 'name', y: "average", fill: 'steelblue', tip: 'x'}),
+        Plot.text(averages, {x: 'name', y:  "average", text: (d) => d.average, dy: -6, lineAnchor: "bottom"}),
+        Plot.ruleY([0])
       ]
+    }, 
+
+    /* history */    
+    plotHistory(){
+      if(!state.logs) return []
+      return [
+        Plot.ruleY([0]),
+        Plot.lineY(state.logs, {x: "date", y: "value", stroke: "name", tip: "y", marker: 'circle'}),
+        ///Plot.crosshair(state.logs, {x: "date", y: "value"})
+        Plot.ruleX(state.logs, Plot.pointerX({x: "date", py: "value", stroke: "red"})),
+      ]    
     }
   }
 
