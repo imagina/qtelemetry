@@ -12,7 +12,7 @@
       </div>      
       <not-result
         class="row q-pa-md q-my-md justify-center"  
-        label="Please seletc a device"
+        :label="this.$tr('itelemetry.cms.form.selectDevice')"
         v-if="!isDeviceSelected"        
       />
       <not-result class="row q-pa-md q-my-md justify-center" v-if="notResult" />
@@ -33,12 +33,17 @@
             :option="averages" 
             autoresize 
           />
-        </div>      
-        <div class="row q-col-gutter-md q-pa-xl q-my-md" v-if="showAverages">
+        </div>
+        <div class="row q-pa-md justify-center" v-if="showAverages">
+          <span class="tw-text-lg tw-font-bold">
+            {{ averagesTitleByRange }}
+          </span>
+        </div>
+        <div class="row q-col-gutter-md q-pa-md" v-if="showAverages">
           <div class="col-12 col-md-3" v-for="(item, index) in getAverages()">          
             <div class="average-card q-pa-md">
               <div class="tw-text-gray-400 tw-text-xs tw-font-semibold">{{ item.label }}</div>
-              <span class="tw-text-2xl tw-font-bold">
+              <span class="tw-text-lg tw-font-bold">
                 {{ item.average.toFixed(4) }}
               </span>                          
             </div>
@@ -59,7 +64,7 @@ import dynamicFilter from 'modules/qsite/_components/master/dynamicFilter';
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart, GraphChart, MapChart, BarChart, LineChart   } from 'echarts/charts'
-import VChart, { THEME_KEY } from 'vue-echarts'
+import VChart from 'vue-echarts'
 
 import {
   TitleComponent,
@@ -69,8 +74,6 @@ import {
   ToolboxComponent,
   DataZoomComponent
 } from 'echarts/components'
-
-
 
 use([
   CanvasRenderer,
@@ -90,7 +93,6 @@ use([
 
 export default defineComponent({  
   components: {
-    //PlotRender, 
     dynamicFilter,
     VChart
   },

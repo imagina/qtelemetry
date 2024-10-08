@@ -1,13 +1,9 @@
 import {computed, reactive, ref, onMounted, toRefs, watch, getCurrentInstance} from "vue";
 import services from 'modules/qtelemetry/_pages/graphs/services'
-import { store, i18n, clone, alert } from 'src/plugins/utils';
+import { i18n } from 'src/plugins/utils';
 import moment from "moment";
-import * as echarts from 'echarts';
-import { title } from "process";
 
-
-export default function controller(props: any, emit: any) {
-  const proxy = getCurrentInstance()!.appContext.config.globalProperties
+export default function controller(props: any, emit: any) {  
 
   const dateFormat = 'YYYY-MM-DD'
 
@@ -24,8 +20,6 @@ export default function controller(props: any, emit: any) {
     sensors: null,
     records: [],
     logs: null,
-
-
     dynamicFilterValues: {},
     dynamicFilters: {
       deviceId: {
@@ -38,7 +32,7 @@ export default function controller(props: any, emit: any) {
           select: {label: 'title', id: 'id'},
         },
         props: {          
-          label: `${i18n.tr('itelemetry.cms.form.devices')}`,
+          label: `${i18n.tr('itelemetry.cms.form.devices')}*`,
           clearable: true,
         }
       },
@@ -51,7 +45,7 @@ export default function controller(props: any, emit: any) {
         type: 'dateRange',
         quickFilter: true,
         props: {
-          label: 'Date',
+          label: `${i18n.tr('isite.cms.form.date')}*`,
           clearable: true,
           removeTime: true,
           autoClose: true
@@ -68,7 +62,8 @@ export default function controller(props: any, emit: any) {
     isDeviceSelected: computed(() => state.dynamicFilterValues.deviceId),
     notResult: computed(() => !state.records.length && computeds.isDeviceSelected.value && !state.loading),
     showAverages: computed(() => !state.loading && state.averages && state.records.length),
-    showHistory: computed(() => !state.loading && state.history && state.records.length)
+    showHistory: computed(() => !state.loading && state.history && state.records.length), 
+    averagesTitleByRange: computed(() => i18n.tr('itelemetry.cms.averagesByRange', {from: state.dynamicFilterValues.date.from, to: state.dynamicFilterValues.date.to}) )
   }
 
   // Methods
@@ -80,10 +75,9 @@ export default function controller(props: any, emit: any) {
       if(computeds.isDeviceSelected.value){
         methods.getData()
       }
-      
     },
     getData(){
-      if(state.dynamicFilterValues?.deviceId) {
+      if(state.dynamicFilterValues?.deviceId && state.dynamicFilterValues?.date) {
         state.loading = true
         methods.getSensors().then(response => {
           state.columns = methods.getColumns()        
@@ -182,14 +176,14 @@ export default function controller(props: any, emit: any) {
       const averages = methods.getAverages()
       state.averages = {
         title: {
-          text: 'Averages Graph', 
+          text: i18n.tr('itelemetry.cms.averagesGraph'),
           left: 'center',
         },
         toolbox: {
           feature: {
             saveAsImage: {
               show: true,
-              title: 'Save Image',
+              title: i18n.tr('itelemetry.cms.form.saveImage'),
               pixelRatio: 3
             }
           }
@@ -218,8 +212,12 @@ export default function controller(props: any, emit: any) {
         },
         series: [
           {
-            data: averages.map(a => a.average.toFixed(2)),
-            type: 'bar'
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'inside'
+            },
+            data: averages.map(a => a.average.toFixed(2))
           }
         ]
       }
@@ -227,13 +225,11 @@ export default function controller(props: any, emit: any) {
 
     /* history */    
     drawHistory(){
-      if(!state.logs) return []      
+      if(!state.logs) return [];    
 
       let date = state.records.map(r => r.createdAt)      
       date = Array.from(new Set(date)) //remove duplicates
-
       let series = [];
-
       //adds a serie for each sensor
       state.sensors.forEach(s => {        
         series.push({
@@ -251,8 +247,6 @@ export default function controller(props: any, emit: any) {
         })
       })
       
-      
-      
       state.history = {
         tooltip: {
           trigger: 'axis',
@@ -261,7 +255,7 @@ export default function controller(props: any, emit: any) {
           }
         },        
         title: {
-          text: 'Historical Graph',
+          text: i18n.tr('itelemetry.cms.historicalGraph'),
           left: 'center',
         },
         
@@ -282,7 +276,7 @@ export default function controller(props: any, emit: any) {
             restore: {},
             saveAsImage: {
               show: true,
-              title: 'Save Image',
+              title: i18n.tr('itelemetry.cms.form.saveImage'),
               pixelRatio: 3
             }
           }
