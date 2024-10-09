@@ -4,6 +4,7 @@ export default {
       "sidebar": {
         "adminGroup": "Telemetry",
         "adminDevices": "Devices",
+        "adminDevicesMap": "Devices Map",
         "adminSensors": "Sensors",
         "adminRecords": "Records",
         "adminGraphs": "Graphs"
@@ -11,7 +12,7 @@ export default {
       "label": {},
       "form": {
         "devices": "Devices",
-        "selectDevice": "Please seletc a device", 
+        "selectDevice": "Please select a device",
         "saveImage": "Save Image"
       },
       "device": "Device",

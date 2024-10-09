@@ -25,12 +25,6 @@ export default {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'
             },
             {
-              name: 'lat', label: 'latitude', field: 'lat', align: 'rigth'
-            },
-            {
-              name: 'lng', label: 'longitude', field: 'lng', align: 'rigth'
-            },
-            {
               name: 'country', label: this.$tr('isite.cms.label.country'), field: 'country', align: 'rigth',
               format: val => val && val?.name ? val.name : '-'
             },

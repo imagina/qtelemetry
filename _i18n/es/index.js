@@ -4,6 +4,7 @@ export default {
       "sidebar": {
         "adminGroup": "Telemetria",
         "adminDevices": "Dispositivos",
+        "adminDevicesMap": "Mapa de dispositivos",
         "adminSensors": "Sensores",
         "adminRecords": "Registros",
         "adminGraphs": "Graficos"
