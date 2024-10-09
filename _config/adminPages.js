@@ -16,6 +16,22 @@ export default {
         refresh: true,
     }
   },
+
+  devicesMap: {
+    permission: 'itelemetry.devices.manage',
+    activated: true,
+    authenticated: true,
+    path: '/telemetry/devices/map',
+    name: 'qtelemetry.admin.devicesMap',
+    page: () => import('modules/qtelemetry/_pages/devices/map'),
+    layout: () => import('layouts/master.vue'),
+    title: 'itelemetry.cms.sidebar.adminDevicesMap',
+    icon: 'fa-light fa-map',
+    subHeader: {
+        refresh: true,
+    }
+  },
+
   sensors: {
     permission: 'itelemetry.sensors.manage',
     activated: true,
