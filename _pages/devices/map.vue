@@ -1,7 +1,7 @@
 <template>
     <div>      
       <div class="row">
-        <dynamic-field v-model="map" class="q-mb-md col-12" :field="mapField"/>
+        <dynamic-field v-model="map" class="q-mb-md col-12" :field="mapField" v-if="!loading"/>
       </div>
      
     <!--inner loading-->
