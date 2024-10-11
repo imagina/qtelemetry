@@ -6,6 +6,7 @@
           <dynamicFilter 
             systemName="telemetry.graphs"
             :filters="dynamicFilters"
+            :showOnMobile="true"
             @update:modelValue="filters => updateDynamicFilterValues(filters)"
           />        
         </div>        
