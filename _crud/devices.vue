@@ -155,7 +155,21 @@ export default {
               select: { label: 'name', id: 'id' },
               requestParams: { filter: { province_id: this.crudInfo.provinceId } }
             }
-          }
+          }, 
+          sensors: {
+              value: [],
+              type: 'select',
+              
+              props: {
+                label: this.$tr('sensors'),
+                clearable: true,
+                multiple: true,
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtelemetry.sensors',
+                select: { label: 'title', id: 'id' }
+              }
+            },
         },
         getDataForm(data, type) {
           return new Promise(resolve => {
