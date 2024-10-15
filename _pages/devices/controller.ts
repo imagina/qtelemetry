@@ -58,13 +58,8 @@ export default function controller(props: any, emit: any) {
     },
     getLastRecord(device){
       return new Promise((resolve, reject) => {
-        const sensorParams = {
-          filter: {
-            deviceId: device.id
-          }
-        }
-        recordServices.getSensors(sensorParams).then(response => {
-          const sensors = response
+        
+          const sensors = device.sensors
           const params = {
             filter: {
               deviceId: device.id,
@@ -75,6 +70,8 @@ export default function controller(props: any, emit: any) {
             },
             take: 1
           }
+
+          console.log(sensors)
           recordServices.getRecords(params).then(response => {
             if(response.length == 0 ) resolve('-')
             const record = response[0]
@@ -101,7 +98,7 @@ export default function controller(props: any, emit: any) {
             }
             resolve(`${title}<p>${data}</p>`)
           })
-        })
+        
       })
     },
     getDevices(){
