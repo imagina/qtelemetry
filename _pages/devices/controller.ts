@@ -85,7 +85,17 @@ export default function controller(props: any, emit: any) {
               sensors.forEach(s => {
                 if(record?.logs){
                   const log = record.logs.find(l => l.sensorId == s.id)
-                  if(log) data = `${data} ${s.title}: ${log.value}</br>`
+                  if(log){
+                    let text = s.title
+                    const options  = s.options
+                    if(options){
+                      text = options?.prefix ?  options.prefix : s.title
+                      text = options?.suffix ?  `${text} : ${log.value} ${options.suffix}` : `${text} : ${log.value}`
+                    } else {
+                      text = `${text} : ${log.value}`
+                    }
+                    data = `${data} ${text}</br>`
+                  }
                 }
               });
             }
