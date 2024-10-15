@@ -65,9 +65,33 @@ export default {
                   val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],        
             }
-          }
+          },          
+          rules: {
+            value: {},
+            type: 'json',
+            props: {
+              label: this.$tr('itelemetry.cms.form.rules')
+            }
+          },
         },
-        formRight: {}        
+        formRight: {
+          prefix: {
+            value: '',
+            type: 'input',
+            isFakeField: true,
+            props: {
+              label: this.$tr('isite.cms.form.prefix')
+            }
+          },
+          suffix: {
+            value: '',
+            type: 'input',
+            isFakeField: true,
+            props: {
+              label: this.$tr('isite.cms.form.suffix')
+            }
+          },
+        }
       }
     },
     //Crud info

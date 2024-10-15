@@ -13,7 +13,8 @@ export default {
       "form": {
         "devices": "Dispositivos",
         "selectDevice": "Por favor seleccione un dispositivo",
-        "saveImage": "Guardar Imagen"
+        "saveImage": "Guardar Imagen",
+        "rules": "Reglas"
       },
       "device": "Dispositivo",
       "newDevice": "Nuevo Dispositivo",

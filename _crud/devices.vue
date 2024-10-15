@@ -49,7 +49,7 @@ export default {
             }
           ],
           requestParams: {
-            include: 'city,country,province'
+            include: 'city,country,province,sensors'
           },
           filters: {
             countryId: {
@@ -91,7 +91,10 @@ export default {
           }
         },
         update: {
-          title: this.$tr('itelemetry.cms.updateDevice')
+          title: this.$tr('itelemetry.cms.updateDevice'),
+          requestParams: {
+            include: 'sensors'
+          },
         },
         delete: true,
         formLeft: {
@@ -159,7 +162,6 @@ export default {
           sensors: {
               value: [],
               type: 'select',
-              
               props: {
                 label: this.$tr('sensors'),
                 clearable: true,
