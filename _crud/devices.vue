@@ -49,7 +49,7 @@ export default {
             }
           ],
           requestParams: {
-            include: 'city,country,province'
+            include: 'city,country,province,sensors'
           },
           filters: {
             countryId: {
@@ -91,7 +91,10 @@ export default {
           }
         },
         update: {
-          title: this.$tr('itelemetry.cms.updateDevice')
+          title: this.$tr('itelemetry.cms.updateDevice'),
+          requestParams: {
+            include: 'sensors'
+          },
         },
         delete: true,
         formLeft: {
@@ -155,7 +158,20 @@ export default {
               select: { label: 'name', id: 'id' },
               requestParams: { filter: { province_id: this.crudInfo.provinceId } }
             }
-          }
+          }, 
+          sensors: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('sensors'),
+                clearable: true,
+                multiple: true,
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtelemetry.sensors',
+                select: { label: 'title', id: 'id' }
+              }
+            },
         },
         getDataForm(data, type) {
           return new Promise(resolve => {

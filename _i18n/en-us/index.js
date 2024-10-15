@@ -13,7 +13,8 @@ export default {
       "form": {
         "devices": "Devices",
         "selectDevice": "Please select a device",
-        "saveImage": "Save Image"
+        "saveImage": "Save Image", 
+        "rules": "Rules"
       },
       "device": "Device",
       "newDevice": "New Device",
