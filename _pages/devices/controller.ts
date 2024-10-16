@@ -86,11 +86,11 @@ export default function controller(props: any, emit: any) {
                   const options = s.options
                   if(options){
                     text = options?.prefix ?  options.prefix : s.title
-                    text = options?.suffix ?  `${text} : ${value} ${options.suffix}` : `${text} : ${value}`
+                    text = options?.suffix ?  `<b>${text}</b> : ${value} ${options.suffix}` : `${text} : ${value}`
                   } else {
-                    text = `${text} : ${value}`
+                    text = `<b>${s.title}</b> : ${value}`
                   }
-                  data = `${data} ${text}  ${status}</br>`
+                  data = `${data} ${text} ${status}</br>`
                 }
               }
             });
