@@ -81,15 +81,16 @@ export default function controller(props: any, emit: any) {
                 const log = record.logs.find(l => l.sensorId == s.id)
                 if(log){
                   let text = s.title
-                  const status = log?.statusSensor ? `<span style="color: ${log.statusSensor.color}">${log.statusSensor.text}</span>` : ''
+                  const value = Number.isInteger(log.value) ? log.value : log.value.toFixed(2)
+                  const status = log?.statusSensor ? ` <span style="background-color: ${log.statusSensor.color}">${log.statusSensor.text}</span>` : ''
                   const options = s.options
                   if(options){
                     text = options?.prefix ?  options.prefix : s.title
-                    text = options?.suffix ?  `${text} : ${log.value} ${options.suffix}` : `${text} : ${log.value}`
+                    text = options?.suffix ?  `${text} : ${value} ${options.suffix}` : `${text} : ${value}`
                   } else {
-                    text = `${text} : ${log.value}`
+                    text = `${text} : ${value}`
                   }
-                  data = `${data} ${text} ${status}</br>`
+                  data = `${data} ${text}  ${status}</br>`
                 }
               }
             });
