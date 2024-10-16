@@ -61,7 +61,7 @@ export default function controller(props: any, emit: any) {
           format: (val) => {
             if(val){
               const log = val.find((x) => x.sensorId == sensor.id )
-              if(log && log?.value != null) return log.value
+              if(log && log?.value != null) return Number.isInteger(log.value) ? log.value : log.value.toFixed(2);
             }
             return '-'                
           },
