@@ -162,8 +162,11 @@ export default function controller(props: any, emit: any) {
         if(data && data.length){
           const sum = data.reduce((accumulator, obj) => accumulator + obj.value, 0);
           const average = sum / data.length;
+          
+          const options = sensor?.options || {}
+          const label = (options?.prefix && options?.suffix) ? `${options.prefix} ${options.suffix}` : sensor.title 
           averages.push({
-            label: sensor.title || sensor.id,
+            label,
             average: average, 
             length: data.length,
             sum, 
