@@ -222,6 +222,9 @@ export default function controller(props: any, emit: any) {
         ]
       }
     }, 
+    getAverageNUmber(value){
+      return Number.isInteger(value) ? value : value.toFixed(2);
+    },
 
     /* history */    
     drawHistory(){
