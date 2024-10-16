@@ -82,7 +82,7 @@ export default function controller(props: any, emit: any) {
                 if(log){
                   let text = s.title
                   const value = Number.isInteger(log.value) ? log.value : log.value.toFixed(2)
-                  const status = log?.statusSensor ? ` <span style="background-color: ${log.statusSensor.color}">${log.statusSensor.text}</span>` : ''
+                  const status = log?.statusSensor ? ` <span style="color: ${log.statusSensor.color}">${log.statusSensor.text}</span>` : ''
                   const options = s.options
                   if(options){
                     text = options?.prefix ?  options.prefix : s.title
