@@ -58,49 +58,43 @@ export default function controller(props: any, emit: any) {
     },
     getLastRecord(device){
       return new Promise((resolve, reject) => {
-        const sensorParams = {
+        const sensors = device.sensors
+        const params = {
           filter: {
-            deviceId: device.id
-          }
+            deviceId: device.id,
+          },
+          orderBy: {
+            field: 'id',
+            way: 'desc'
+          },
+          take: 1
         }
-        recordServices.getSensors(sensorParams).then(response => {
-          const sensors = response
-          const params = {
-            filter: {
-              deviceId: device.id,
-            },
-            orderBy: {
-              field: 'id',
-              way: 'desc'
-            },
-            take: 1
-          }
-          recordServices.getRecords(params).then(response => {
-            if(response.length == 0 ) resolve('-')
-            const record = response[0]
-            const title = `<b>${record?.device?.title}</b>` || '-'
-            let data = ''
-            //build the data for popUp
-            if(sensors.length){
-              sensors.forEach(s => {
-                if(record?.logs){
-                  const log = record.logs.find(l => l.sensorId == s.id)
-                  if(log){
-                    let text = s.title
-                    const options  = s.options
-                    if(options){
-                      text = options?.prefix ?  options.prefix : s.title
-                      text = options?.suffix ?  `${text} : ${log.value} ${options.suffix}` : `${text} : ${log.value}`
-                    } else {
-                      text = `${text} : ${log.value}`
-                    }
-                    data = `${data} ${text}</br>`
+        recordServices.getRecords(params).then(response => {
+          if(response.length == 0 ) resolve('-')
+          const record = response[0]
+          const title = `<b>${record?.device?.title}</b>` || '-'
+          let data = ''
+          //build the data for popUp
+          if(sensors.length){
+            sensors.forEach(s => {
+              if(record?.logs){
+                const log = record.logs.find(l => l.sensorId == s.id)
+                if(log){
+                  let text = s.title
+                  const status = log?.statusSensor ? `<span style="color: ${log.statusSensor.color}">${log.statusSensor.text}</span>` : ''
+                  const options = s.options
+                  if(options){
+                    text = options?.prefix ?  options.prefix : s.title
+                    text = options?.suffix ?  `${text} : ${log.value} ${options.suffix}` : `${text} : ${log.value}`
+                  } else {
+                    text = `${text} : ${log.value}`
                   }
+                  data = `${data} ${text} ${status}</br>`
                 }
-              });
-            }
-            resolve(`${title}<p>${data}</p>`)
-          })
+              }
+            });
+          }
+          resolve(`${title}<p>${data}</p>`)
         })
       })
     },
