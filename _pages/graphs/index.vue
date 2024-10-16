@@ -45,7 +45,7 @@
             <div class="average-card q-pa-md">
               <div class="tw-text-gray-400 tw-text-xs tw-font-semibold">{{ item.label }}</div>
               <span class="tw-text-lg tw-font-bold">
-                {{ item.average.toFixed(4) }}
+                {{ getAverageNUmber(item.average)}}
               </span>                          
             </div>
           </div>
