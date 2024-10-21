@@ -14,7 +14,8 @@ export default {
         "devices": "Dispositivos",
         "selectDevice": "Por favor seleccione un dispositivo",
         "saveImage": "Guardar Imagen",
-        "rules": "Reglas"
+        "rules": "Reglas",
+        "openPopup": "Abrir automáticamente en el mapa"
       },
       "device": "Dispositivo",
       "newDevice": "Nuevo Dispositivo",

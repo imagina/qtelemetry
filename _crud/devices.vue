@@ -174,10 +174,9 @@ export default {
           },
           openPopup: {
             value: '1',
-            //help: { description: 'Automatically open on the map' },
             isFakeField: true,
             type: 'toggle',
-            props: {label: 'Automatically open on the map'}
+            props: {label: this.$tr('itelemetry.cms.form.openPopup')}
           },
         },
         getDataForm(data, type) {
