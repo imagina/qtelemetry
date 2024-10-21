@@ -53,7 +53,6 @@ export default function controller(props: any, emit: any) {
           lat: device.lat,
           lng: device.lng,
           title: device.title,
-          content: device.title,
           loadingLabel: i18n.tr('isite.cms.label.loading'),
           onClick: () => methods.getLastRecord(device), 
           openPopup
