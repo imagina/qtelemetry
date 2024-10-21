@@ -160,18 +160,24 @@ export default {
             }
           }, 
           sensors: {
-              value: [],
-              type: 'select',
-              props: {
-                label: this.$tr('sensors'),
-                clearable: true,
-                multiple: true,
-              },
-              loadOptions: {
-                apiRoute: 'apiRoutes.qtelemetry.sensors',
-                select: { label: 'title', id: 'id' }
-              }
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('sensors'),
+              clearable: true,
+              multiple: true,
             },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtelemetry.sensors',
+              select: { label: 'title', id: 'id' }
+            }
+          },
+          openPopup: {
+            value: '1',
+            isFakeField: true,
+            type: 'toggle',
+            props: {label: this.$tr('itelemetry.cms.form.openPopup')}
+          },
         },
         getDataForm(data, type) {
           return new Promise(resolve => {
@@ -179,6 +185,7 @@ export default {
             if (data.options) {
               data.lat = data.options.map?.lat;
               data.lng = data.options.map?.lng;
+              data.openPopup = data.options.openPopup;
             }
             //Response
             resolve(data);
