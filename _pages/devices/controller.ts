@@ -51,8 +51,10 @@ export default function controller(props: any, emit: any) {
           lat: device.lat,
           lng: device.lng,
           title: device.title,
+          content: device.title,
           loadingLabel: i18n.tr('isite.cms.label.loading'),
-          onClick: () => methods.getLastRecord(device)
+          onClick: () => methods.getLastRecord(device), 
+          openPopup: false
         }
       })
     },
@@ -70,9 +72,10 @@ export default function controller(props: any, emit: any) {
           take: 1
         }
         recordServices.getRecords(params).then(response => {
-          if(response.length == 0 ) resolve('-')
+          let title = `<b>${device?.title}</b>` || '-'
+          if(response.length == 0 ) resolve(title)
           const record = response[0]
-          const title = `<b>${record?.device?.title}</b>` || '-'
+          title = `<b>${record?.device?.title}</b>`
           let data = ''
           //build the data for popUp
           if(sensors.length){
