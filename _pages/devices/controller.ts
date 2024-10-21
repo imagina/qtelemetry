@@ -47,6 +47,8 @@ export default function controller(props: any, emit: any) {
     },
     setMarkers(){
       state.map = state.devices.map(device => {
+        //open by default
+        const openPopup = device.options?.openPopup && device.options?.openPopup == '0' ? false : true
         return {
           lat: device.lat,
           lng: device.lng,
@@ -54,7 +56,7 @@ export default function controller(props: any, emit: any) {
           content: device.title,
           loadingLabel: i18n.tr('isite.cms.label.loading'),
           onClick: () => methods.getLastRecord(device), 
-          openPopup: false
+          openPopup
         }
       })
     },
