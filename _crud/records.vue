@@ -12,7 +12,8 @@ export default {
     crudData() {
       return {
         crudId: this.crudId,        
-        apiRoute: 'apiRoutes.qtelemetry.records',        
+        apiRoute: 'apiRoutes.qtelemetry.records',
+        permission: 'itelemetry.records',
         read: {
           title: this.$tr('itelemetry.cms.sidebar.adminRecords'),
           columns: [],
