@@ -13,6 +13,7 @@ export default {
       return {
         crudId: this.crudId,        
         apiRoute: 'apiRoutes.qtelemetry.sensors',
+        permission: 'itelemetry.sensors',
         create: {
           title: this.$tr('itelemetry.cms.newSensor'),
         },
