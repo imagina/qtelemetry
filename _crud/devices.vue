@@ -13,6 +13,7 @@ export default {
       return {
         crudId: this.crudId,
         apiRoute: 'apiRoutes.qtelemetry.devices',
+        permission: 'itelemetry.devices',
         create: {
           title: this.$tr('itelemetry.cms.newDevice')
         },
@@ -158,7 +159,7 @@ export default {
               select: { label: 'name', id: 'id' },
               requestParams: { filter: { province_id: this.crudInfo.provinceId } }
             }
-          }, 
+          },
           sensors: {
             value: [],
             type: 'select',
@@ -176,7 +177,7 @@ export default {
             value: '1',
             isFakeField: true,
             type: 'toggle',
-            props: {label: this.$tr('itelemetry.cms.form.openPopup')}
+            props: { label: this.$tr('itelemetry.cms.form.openPopup') }
           },
         },
         getDataForm(data, type) {
