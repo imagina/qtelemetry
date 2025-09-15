@@ -57,7 +57,7 @@ export default {
               value: null,
               type: 'select',
               props: {
-                label: this.$tr('ilocations.cms.form.country'),
+                label: this.$tr('ilocation.cms.form.country'),
                 clearable: true
               },
               loadOptions: {
@@ -69,7 +69,7 @@ export default {
               value: null,
               type: 'select',
               props: {
-                label: this.$tr('ilocations.cms.form.province'),
+                label: this.$tr('ilocation.cms.form.province'),
                 clearable: true
               },
               loadOptions: {
